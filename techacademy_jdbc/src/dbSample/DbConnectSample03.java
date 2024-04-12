@@ -1,12 +1,15 @@
 package dbSample;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class DbConnectSample01 {
+public class DbConnectSample03 {
 
     public static void main(String[] args) {
         // データベース接続と結果取得のための変数
@@ -29,13 +32,17 @@ public class DbConnectSample01 {
             stmt = con.createStatement();
             
             // 4, 5. Select文の実行と結果を格納／代入
-            String sql = "SELECT * FROM country LIMIT 50";
+            System.out.print("検索キーワードを入力してください > ");
+            String input = keyIn(); 
+            
+            String sql = "select * from country where Name = '" + input + "'";
             rs = stmt.executeQuery(sql);
             
             // 6. 結果を表示する
             while ( rs.next()) {
                 // Name列の値を取得
                 String name = rs.getString("Name");
+                
                 //　PopuLation列の値を取得
                 int population = rs.getInt("Population");
                 
@@ -43,12 +50,13 @@ public class DbConnectSample01 {
                 System.out.println(name);
                 System.out.println(population);
             }
-         
+       
+            
         } catch (ClassNotFoundException e) {
-            System.out.println("JDBCドライバーのロードに失敗しました。");
+            System.err.println("JDBCドライバーのロードに失敗しました。");
             e.printStackTrace();
         } catch (SQLException e) {
-            System.out.println("データベースに異常が発生しました。");
+            System.err.println("データベースに異常が発生しました。");
             e.printStackTrace();
         } finally {
         
@@ -70,6 +78,7 @@ public class DbConnectSample01 {
                    e.printStackTrace();
                }
             }
+        }
             if( con != null) {
                 try {
                     con.close();
@@ -79,7 +88,19 @@ public class DbConnectSample01 {
                 }
             }
         }
-    }
+        
+        /*
+         * キーボードから入力された値をStringで返す 引数：なし 戻り値：入力された文字列
+         */
+    private static String keyIn() {
+        String line = null;
+        try {
+                BufferedReader key = new BufferedReader(new InputStreamReader(System.in));
+                line = key.readLine();
+        } catch (IOException e) {
+
+        }
+        return line;
 }
-            
+}
           
